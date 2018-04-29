@@ -8,6 +8,7 @@ import { AppComponent } from './components/app/app.component';
 import { NavMenuComponent } from './components/navmenu/navmenu.component';
 import { HomeComponent } from './components/home/home.component';
 import { VehicleFormComponent } from './components/vehicle-form/vehicle-form.component';
+import { VehicleService } from './services/vehicle.service';
 
 @NgModule({
     declarations: [
@@ -26,6 +27,9 @@ import { VehicleFormComponent } from './components/vehicle-form/vehicle-form.com
             { path: 'vehicles/new', component: VehicleFormComponent },
             { path: '**', redirectTo: 'home' }
         ])
+    ],
+    providers: [
+        VehicleService
     ]
 })
 export class AppModuleShared {
