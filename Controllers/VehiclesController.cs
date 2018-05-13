@@ -23,15 +23,25 @@ namespace vega.Controllers
     [HttpPost]
     public async Task<IActionResult> CreateVehicle([FromBody] VehicleResource vehicleResource)
     {
-        var vehicle = mapper.Map<VehicleResource, Vehicle>(vehicleResource);
-        vehicle.LastUpdate = DateTime.Now;
+      if (!ModelState.IsValid)
+        return BadRequest(ModelState);
 
-        context.Vehicles.Add(vehicle);
-        await context.SaveChangesAsync();
+      var model = await context.Models.FindAsync(vehicleResource.ModelId);
+      if (model == null)
+      {
+        ModelState.AddModelError("ModelId", "Invalid modelId.");
+        return BadRequest(ModelState);
+      }
 
-        var result = mapper.Map<Vehicle, VehicleResource>(vehicle);
+      var vehicle = mapper.Map<VehicleResource, Vehicle>(vehicleResource);
+      vehicle.LastUpdate = DateTime.Now;
 
-        return Ok(result);
+      context.Vehicles.Add(vehicle);
+      await context.SaveChangesAsync();
+
+      var result = mapper.Map<Vehicle, VehicleResource>(vehicle);
+
+      return Ok(result);
     }
   }
 }
