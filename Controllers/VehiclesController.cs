@@ -39,10 +39,10 @@ namespace vega.Controllers
       var vehicle = mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource);
       vehicle.LastUpdate = DateTime.Now;
 
-      context.Vehicles.Add(vehicle);
+      repository.Add(vehicle);
       await context.SaveChangesAsync();
 
-      vehicle = await repository.GetVehcile(vehicle.Id);
+      vehicle = await repository.GetVehicle(vehicle.Id);
 
       var result = mapper.Map<Vehicle, VehicleResource>(vehicle);
 
@@ -55,7 +55,7 @@ namespace vega.Controllers
       if (!ModelState.IsValid)
         return BadRequest(ModelState);
 
-      var vehicle = await repository.GetVehcile(id);
+      var vehicle = await repository.GetVehicle(id);
 
       if (vehicle == null)
         return NotFound();
@@ -73,12 +73,12 @@ namespace vega.Controllers
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteVehicle(int id)
     {
-      var vehicle = await context.Vehicles.FindAsync(id);
+      var vehicle = await repository.GetVehicle(id, includeRelated: false);
 
       if (vehicle == null)
         return NotFound();
 
-      context.Remove(vehicle);
+      repository.Remove(vehicle);
       await context.SaveChangesAsync();
 
       return Ok(id);
@@ -87,7 +87,7 @@ namespace vega.Controllers
     [HttpGet("{id}")]
     public async Task<IActionResult> GetVehicle(int id)
     {
-      var vehicle = await repository.GetVehcile(id);
+      var vehicle = await repository.GetVehicle(id);
 
       if (vehicle == null)
         return NotFound();
